@@ -71,12 +71,12 @@ ble_client:
             level: "INFO"
         - lambda: "id(binary_sensor_${blueriiot_id_prefix}_connected).publish_state(true);"
         - delay: 2s
-        - button.press: button_${blueriiot_id_prefix}_doreading
+        - button.press: button_${blueriiot_id_prefix}_read_sensors
 
 button:
   - platform: template
-    id: button_${blueriiot_id_prefix}_doreading
-    name: ${blueriiot_name_prefix} do reading
+    id: button_${blueriiot_id_prefix}_read_sensors
+    name: ${blueriiot_name_prefix} Read Sensors
     internal: true
     on_press:
       then:
@@ -94,13 +94,13 @@ button:
 switch:
   - platform: ble_client
     ble_client_id: ble_client_${blueriiot_id_prefix}
-    name: "${blueriiot_name_prefix} Read Sensors"
-    id: switch_${blueriiot_id_prefix}_read_sensors
+    name: "${blueriiot_name_prefix} Connect"
+    id: switch_${blueriiot_id_prefix}_connect
 
 binary_sensor:
   - platform: template
     id: binary_sensor_${blueriiot_id_prefix}_connected
-    name: ${blueriiot_name_prefix} Status
+    name: ${blueriiot_name_prefix} Connected
     device_class: connectivity
     entity_category: diagnostic
 
@@ -173,4 +173,4 @@ text_sensor:
           ESP_LOGI("bat", "%f", bat);
           id(sensor_${blueriiot_id_prefix}_bat).publish_state(bat);
 
-          id(switch_${blueriiot_id_prefix}_read_sensors).turn_off();
+          id(switch_${blueriiot_id_prefix}_connect).turn_off();
