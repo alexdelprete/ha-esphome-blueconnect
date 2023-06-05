@@ -12,18 +12,23 @@ substitutions:
   blueriiot_receive_characteristic_uuid: 'F3300003-F0A2-9B06-0C59-1BC4763B5C00'
 
 esphome:
-  name: blueconnect-m5
-  friendly_name: BlueConnect-M5
+  name: "blueconnect"
+  friendly_name: BlueConnect
 
 esp32:
   board: m5stack-atom
   framework:
     type: arduino
+    # type: esp-idf
+    version: recommended
 
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   domain: !secret wifi_domain
+  # enable_btm: True
+  # enable_rrm: True
+
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   # ap:
   #   ssid: "Blueriiot Fallback Hotspot"
@@ -89,7 +94,7 @@ button:
 switch:
   - platform: ble_client
     ble_client_id: ble_client_${blueriiot_id_prefix}
-    name: "${blueriiot_id_prefix} Read Sensors"
+    name: "${blueriiot_name_prefix} Read Sensors"
     id: switch_${blueriiot_id_prefix}_read_sensors
 
 binary_sensor:
@@ -128,7 +133,7 @@ sensor:
 
   - platform: template
     id: sensor_${blueriiot_id_prefix}_bat
-    name: ${blueriiot_id_prefix} Battery
+    name: ${blueriiot_name_prefix} Battery
     unit_of_measurement: "%"
     icon: "mdi:battery"
     device_class: "battery"
@@ -147,7 +152,7 @@ text_sensor:
     update_interval: never
     on_notify:
       then:
-       lambda: |-
+        lambda: |-
           std::string rawhex = format_hex_pretty((uint8_t *) x.c_str(), x.size()).c_str();
           ESP_LOGI("raw_hex", "%s", rawhex.c_str());
 
@@ -169,4 +174,3 @@ text_sensor:
           id(sensor_${blueriiot_id_prefix}_bat).publish_state(bat);
 
           id(switch_${blueriiot_id_prefix}_read_sensors).turn_off();
-
